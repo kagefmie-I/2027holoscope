@@ -25,10 +25,43 @@ const portraitPositions=JSON.parse(await fs.readFile(path.join(here,'portrait-po
 const portraitPosition=portraitPositions[sign];
 if(!portraitPosition) throw new Error(`Missing portrait position for sign: ${sign}`);
 const source=await fs.readFile(input,'utf8');
-const sections={};
-for(const m of source.matchAll(/<!--\s*page:\s*(p\d+)\s*-->([\s\S]*?)(?=<!--\s*page:|$)/g)) sections[m[1]]=marked.parse(m[2].trim());
+const sourceSections={};
+for(const m of source.matchAll(/<!--\s*page:\s*(p\d+)\s*-->([\s\S]*?)(?=<!--\s*page:|$)/g)) sourceSections[m[1]]=m[2].trim();
+for(const page of ['p05','p06','p07','p08']) {
+  if(!sourceSections[page]) throw new Error(`Missing required manuscript section: ${page}`);
+}
 let html=await fs.readFile(path.join(here,'template.html'),'utf8');
-for(const [key,content] of Object.entries(sections)) html=html.replace(`<div class="reading-slot" data-page="${key}"></div>`,`<div class="reading-slot">${content}</div>`).replace(`<div class="message-slot" data-page="${key}"></div>`,`<div class="message-slot">${content}</div>`);
+for(const page of ['p05','p06','p07']) {
+  const match=sourceSections[page].match(/^\s*#{1,2}\s+(.+?)\s*#*\s*(?:\r?\n|$)/);
+  if(!match) throw new Error(`${page} must start with a Markdown heading (for example: ## 個別の見出し)`);
+  const title=marked.parseInline(match[1].trim());
+  const body=marked.parse(sourceSections[page].slice(match[0].length).trim());
+  html=html.replace(`<h1 data-page-title="${page}"></h1>`,`<h1>${title}</h1>`);
+  html=html.replace(`<div class="reading-slot" data-page="${page}"></div>`,`<div class="reading-slot">${body}</div>`);
+}
+const tarotHeading=/^###\s+(1[0-2]|[1-9])月\s*$/gm;
+const tarotMatches=[...sourceSections.p08.matchAll(tarotHeading)];
+if(tarotMatches.length!==12) throw new Error('p08 must contain exactly twelve ### N月 sections (1月 through 12月).');
+const tarotEntries=tarotMatches.map((match,index)=>{
+  const month=Number(match[1]);
+  if(month!==index+1) throw new Error('Tarot months must be listed once each in order from 1月 to 12月.');
+  const start=match.index+match[0].length;
+  const end=index+1<tarotMatches.length?tarotMatches[index+1].index:sourceSections.p08.length;
+  const entry=sourceSections.p08.slice(start,end).trim();
+  const image=entry.match(/^(!\[[^\]]*\]\([^\r\n]+\))\s*(?:\r?\n|$)/);
+  if(!image) throw new Error(`${month}月 must start with a Tarot image Markdown line, such as ![カード](assets/tarot/01.png).`);
+  const fortune=entry.slice(image[0].length).trim();
+  if(!fortune) throw new Error(`${month}月 needs forecast text after its Tarot image.`);
+  return `<article class="tarot-month"><h2>${month}月</h2><div class="tarot-month-content">${marked.parseInline(image[1])}<div class="tarot-copy">${marked.parse(fortune)}</div></div></article>`;
+}).join('');
+html=html.replace('<div class="reading-slot" data-page="p08"></div>',`<div class="reading-slot">${tarotEntries}</div>`);
+const maidMessageImage=`assets/2027お言葉_${signs[sign][0]}.png`;
+try {
+  await fs.access(path.join(here,maidMessageImage));
+} catch {
+  throw new Error(`Missing maid message image: ${maidMessageImage}`);
+}
+html=html.replace('<div class="message-slot" data-page="p11"></div>',`<div class="message-slot"><img class="maid-message-image" src="${maidMessageImage}" alt="${signs[sign][0]}座メイドさんのお言葉"></div>`);
 html=html.replaceAll('assets/牡牛座_透過.png',`assets/${signs[sign][2]}`);
 const css=await fs.readFile(path.join(here,'styles.css'),'utf8');
 const js=await fs.readFile(path.join(here,'book.js'),'utf8');
