@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>2027年の星占い</title>
+  <style>@page {
+  size: 128mm 182mm;
+  margin: 0;
+}
+
+:root {
+  /* Mid-value, muted sign colours keep the white line art and lettering visible. */
+  --sign-aries: #A95F72;
+  --sign-taurus: #9288A9;
+  --sign-gemini: #5F8B73;
+  --sign-cancer: #668B9D;
+  --sign-leo: #A96F48;
+  --sign-virgo: #78814D;
+  --sign-libra: #4D76A4;
+  --sign-scorpio: #754BA1;
+  --sign-sagittarius: #91713F;
+  --sign-capricorn: #4B627D;
+  --sign-aquarius: #47828A;
+  --sign-pisces: #5E72A3;
+  --cover-color: var(--sign-leo);
+  --ink: #171414;
+  /* Cover portrait: tune independently after checking the face in the medallion. */
+  --portrait-scale: 2.6;
+  --portrait-x: 1mm;
+  --portrait-y: -1mm;
+  /* Back silhouette: same zodiac PNG, rendered white; position/scale are independent. */
+  --back-silhouette-scale: 1;
+  --back-silhouette-x: 50%;
+  --back-silhouette-y: 50%;
+  --font-mincho: "源ノ明朝", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  background: #eee;
+  font-family: var(--font-mincho);
+}
+
+.book {
+  width: 128mm;
+  margin: 0 auto;
+}
+
+.page {
+  width: 128mm;
+  height: 182mm;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  page-break-after: always;
+  break-after: page;
+}
+
+.page:last-child {
+  page-break-after: auto;
+  break-after: auto;
+}
+
+h1 {
+  position: absolute;
+  top: 7.5mm;
+  left: 9mm;
+  right: 9mm;
+  margin: 0;
+  text-align: center;
+  font: 400 17pt/1.3 var(--font-mincho);
+  letter-spacing: .025em;
+}
+
+.page-number {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10mm;
+  text-align: center;
+  font: 7pt/1 var(--font-mincho);
+  color: #111;
+}
+
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 6mm;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+/* Front and back covers */
+.cover,
+.back-cover {
+  background: var(--cover-color);
+  color: #fff;
+}
+
+.cover-title {
+  position: absolute;
+  top: 32mm;
+  left: 12mm;
+  right: 12mm;
+  text-align: center;
+  font: 700 22pt/1.25 var(--font-mincho);
+  letter-spacing: .03em;
+}
+
+.cover-flourish {
+  position: absolute;
+  left: 44mm;
+  width: 40mm;
+  height: 18mm;
+  object-fit: contain;
+}
+
+.flourish-top {
+  top: 46mm;
+}
+
+.flourish-bottom {
+  top: 118mm;
+  transform: rotate(180deg);
+}
+
+.cameo {
+  position: absolute;
+  left: 37.5mm;
+  top: 62mm;
+  width: 53mm;
+  height: 58.3mm;
+}
+
+.portrait-mask {
+  position: absolute;
+  overflow: hidden;
+  z-index: 1;
+  top: 0px;
+  margin: 6%;
+  width: 88%;
+  height: 89%;
+  border-radius: 50%;
+}
+
+.portrait {
+  width: 86%;
+  height: 104%;
+  object-fit: cover;
+  object-position: var(--portrait-x) var(--portrait-y);
+  transform: scale(var(--portrait-scale));
+  transform-origin: center top;
+}
+
+.cameo-inner,
+.cameo-frill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.cameo-inner {
+  z-index: 0;
+  width: 88%;
+  height: 89%;
+  margin: 6%;
+}
+
+.cameo-frill {
+  z-index: 2;
+}
+
+.side-star {
+  position: absolute;
+  width: 7mm;
+  height: 28mm;
+  object-fit: contain;
+  top: 77mm;
+}
+
+.star-l1 {
+  left: 28mm;
+}
+
+.star-r1 {
+  right: 28mm;
+  transform: scaleX(-1);
+}
+
+.star-l2,
+.star-r2 {
+  display: none;
+}
+
+.spark {
+  position: absolute;
+  font-family: serif;
+  font-size: 20pt;
+  line-height: 1;
+  color: #fff;
+}
+
+.spark.s1 {
+  left: 27mm;
+  top: 75mm;
+}
+
+.spark.s2 {
+  left: 27mm;
+  top: 90mm;
+  font-size: 24pt;
+}
+
+.spark.s3 {
+  right: 27mm;
+  top: 75mm;
+}
+
+.spark.s4 {
+  right: 27mm;
+  top: 90mm;
+  font-size: 24pt;
+}
+
+.cover-subtitle {
+  position: absolute;
+  top: 144mm;
+  left: 8mm;
+  right: 8mm;
+  text-align: center;
+  font: 700 13pt/1.2 var(--font-mincho);
+  letter-spacing: .02em;
+}
+
+.back-silhouette {
+  position: absolute;
+  width: 60mm;
+  height: 90mm;
+  left: 34mm;
+  top: 34mm;
+  object-fit: contain;
+  object-position: var(--back-silhouette-x) var(--back-silhouette-y);
+  filter: brightness(0) invert(1);
+  transform: scale(var(--back-silhouette-scale));
+}
+
+.presented,
+.years {
+  position: absolute;
+  left: 8mm;
+  right: 8mm;
+  text-align: center;
+  color: #fff;
+}
+
+.presented {
+  top: 126mm;
+  font-family: "Another Love", "Brush Script MT", cursive;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13pt;
+  line-height: 1.3;
+}
+
+.years {
+  top: 140mm;
+  font-family: "Another Love", "Noto Serif JP", "Hiragino Mincho ProN", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 13pt;
+  line-height: 1.3;
+}
+
+/* Intro page */
+.intro h1 {
+  top: 8mm;
+  font-size: 17pt;
+}
+
+.swallow-rule {
+  position: absolute;
+  left: 19mm;
+  top: 22mm;
+  width: 90mm;
+  height: 12mm;
+  object-fit: contain;
+}
+
+.intro-copy {
+  position: absolute;
+  left: 18mm;
+  right: 17mm;
+  top: 43mm;
+  font: 11pt/1.25 var(--font-mincho);
+}
+
+.intro-copy p {
+  margin: 0 0 3.7mm;
+}
+
+.intro-art {
+  position: absolute;
+  object-fit: contain;
+}
+
+.venus {
+  left: -8mm;
+  bottom: -3mm;
+  width: 67mm;
+  height: 49mm;
+}
+
+.strawberry {
+  right: -3mm;
+  bottom: -6mm;
+  width: 30mm;
+  height: 37mm;
+}
+
+/* Common writing worksheets */
+.prompt {
+  position: absolute;
+  left: 11mm;
+  right: 6mm;
+  display: flex;
+  align-items: center;
+  gap: 2.6mm;
+  font: 11pt/1.4 var(--font-mincho);
+}
+
+.prompt img {
+  flex: none;
+  width: 4.2mm;
+  height: 4.2mm;
+  object-fit: contain;
+}
+
+.first-worksheet h1 {
+  top: 8mm;
+  font-size: 17pt;
+}
+
+.first-worksheet .p-a {
+  top: 27mm;
+}
+
+.first-worksheet .p-b {
+  top: 104mm;
+}
+
+.second-worksheet .p-a {
+  top: 12mm;
+}
+
+.second-worksheet .p-b {
+  top: 65mm;
+}
+
+.second-worksheet .p-c {
+  top: 118mm;
+}
+
+/* Individual reading pages. The Markdown slots start where the reference's copy begins. */
+.reading-page h1 {
+  top: 8mm;
+  font-size: 17pt;
+}
+
+.reading-slot {
+  position: absolute;
+  top: 29mm;
+  left: 19mm;
+  right: 15mm;
+  bottom: 12mm;
+  font: 11pt/1.65 var(--font-mincho);
+}
+
+.reading-slot p {
+  margin: 0 0 4mm;
+}
+
+.reading-slot h2 {
+  font: 13pt/1.5 var(--font-mincho);
+  margin: 0 0 3mm;
+}
+
+.reading-slot h3 {
+  font: 11pt/1.5 var(--font-mincho);
+  margin: 4mm 0 2mm;
+}
+
+.reading-slot ul {
+  padding: 0;
+  list-style: none;
+  margin: 0 0 3mm;
+}
+
+.reading-slot li {
+  margin: 0 0 2mm;
+}
+
+.reading-slot li::before {
+  content: "";
+  display: inline-block;
+  width: 3.2mm;
+  height: 3.2mm;
+  margin: 0 2mm 0 0;
+  vertical-align: -.4mm;
+  background: url("assets/箇条書き頭.svg") center/contain no-repeat;
+}
+
+.reading-slot img {
+  max-width: 100%;
+  max-height: 90mm;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.tarot-page .reading-slot {
+  top: 31mm;
+}
+
+/* 12 monthly record panels */
+.monthly-page h1 {
+  top: 5mm;
+  font-size: 16pt;
+}
+
+.month-grid {
+  position: absolute;
+  left: 13mm;
+  right: 13mm;
+  top: 17mm;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 49mm);
+  column-gap: 5mm;
+  row-gap: 1mm;
+}
+
+.month {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.month img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.month span {
+  position: relative;
+  z-index: 1;
+  font: 700 38pt/1 Georgia, serif;
+  color: #c5c5c5;
+}
+
+.continuation .month-grid {
+  top: 17mm;
+}
+
+/* Closing message image or editable Markdown */
+.message-page h1 {
+  top: 8mm;
+  font-size: 17pt;
+}
+
+.message-slot {
+  position: absolute;
+  top: 34mm;
+  left: 17mm;
+  right: 17mm;
+  text-align: center;
+  font: 12pt/1.7 var(--font-mincho);
+}
+
+.message-slot p {
+  margin: 0 0 4mm;
+}
+
+@media screen {
+  .page {
+    margin: 12mm auto;
+    box-shadow: 0 2px 14px #0002;
+  }
+}
+
+@media print {
+
+  html,
+  body {
+    background: #fff;
+  }
+
+  .book {
+    margin: 0;
+  }
+
+  .page {
+    margin: 0;
+    box-shadow: none;
+  }
+}</style>
+</head>
+
+<body>
+  <main class="book">
+    <section class="page cover">
+      <img class="frame" src="assets/hyoushi_waku.svg" alt="">
+      <img class="side-star star-l1" src="assets/hoshi_kazari.svg" alt=""><img class="side-star star-l2"
+        src="assets/hoshi_kazari.svg" alt="">
+      <img class="side-star star-r1" src="assets/hoshi_kazari.svg" alt=""><img class="side-star star-r2"
+        src="assets/hoshi_kazari.svg" alt="">
+      <div class="cover-title">2027年の星占い</div>
+      <img class="cover-flourish flourish-top" src="assets/maid_kazari.svg" alt="">
+      <div class="cameo">
+        <div class="portrait-mask"><img class="maid portrait" src="assets/天秤座_透過.png" alt=""></div>
+        <img class="cameo-inner" src="assets/maru_nakami.svg" alt=""><img class="cameo-frill"
+          src="assets/maru_frill.svg" alt="">
+      </div>
+      <img class="cover-flourish flourish-bottom" src="assets/maid_kazari.svg" alt="">
+      <div class="cover-subtitle">THE YEAR OF STARS IN 2027</div>
+    </section>
+
+    <section class="page intro">
+      <h1>はじめに―この冊子の使い方</h1>
+      <img class="swallow-rule" src="assets/swallow.svg" alt="">
+      <div class="intro-copy">
+        <p>この冊子は、あなただけの年間運勢予測を書き下ろし、目標や記録を自分で書き込めるワークシートやメモをつけた、あなた専用の「2027年の友」です。</p>
+        <p>ぜひ、コンビニなどで小冊子印刷して、書き込みながらお使いください。（用紙サイズはB5、冊子にしてB6サイズにするとちょうどいいです）</p>
+        <p>占いで一年の予測をたてるだけでなく、年始に考えたことを年末の自分に伝えておいたり、やりたいことややめたいことの整理などにお使いください。</p>
+        <p>とくに、12ヶ月のタロット予報と、実際にその月何が起こったかは書きとめておくとおもしろいものです。</p>
+        <p>巻末には、あなたの担当メイドさん（12星座のうち太陽がある星座のメイドさん）からのお言葉が収められています。ときどき見返して、お守りにしてください。</p>
+      </div>
+      <img class="intro-art venus" src="assets/venus.svg" alt=""><img class="intro-art strawberry"
+        src="assets/strawberry.svg" alt="">
+      <span class="page-number">1</span>
+    </section>
+
+    <section class="page worksheet first-worksheet">
+      <h1>2027年のはじめからおわりまでに</h1>
+      <div class="prompt p-a"><img src="assets/箇条書き頭.svg" alt=""><span>2027年をどんなふうに過ごしたいか、年の初めに</span></div>
+      <div class="prompt p-b"><img src="assets/箇条書き頭.svg" alt=""><span>今の自分をひとことでいうと</span></div>
+      <span class="page-number">2</span>
+    </section>
+
+    <section class="page worksheet second-worksheet">
+      <div class="prompt p-a"><img src="assets/箇条書き頭.svg" alt=""><span>今年はじめたいこと</span></div>
+      <div class="prompt p-b"><img src="assets/箇条書き頭.svg" alt=""><span>今年やめたいこと</span></div>
+      <div class="prompt p-c"><img src="assets/箇条書き頭.svg" alt=""><span>2027年末の自分へ、伝言と覚え書き</span></div>
+      <span class="page-number">3</span>
+    </section>
+
+    <section class="page reading-page">
+      <h1>持って生まれた傾向について</h1>
+      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります)</p>
+</div><span class="page-number">4</span>
+    </section>
+    <section class="page reading-page">
+      <h1>2027年の概観</h1>
+      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります)</p>
+</div><span class="page-number">5</span>
+    </section>
+    <section class="page reading-page">
+      <h1>特に気をつけるべき時期</h1>
+      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります)</p>
+</div><span class="page-number">6</span>
+    </section>
+    <section class="page reading-page tarot-page">
+      <h1>12ヶ月のタロット予報</h1>
+      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります（画像あり）)</p>
+</div><span class="page-number">7</span>
+    </section>
+
+    <section class="page monthly-page">
+      <h1>2027年の記録</h1>
+      <div class="month-grid" id="months-a"></div><span class="page-number">8</span>
+    </section>
+    <section class="page monthly-page continuation">
+      <div class="month-grid" id="months-b"></div><span class="page-number">9</span>
+    </section>
+
+    <section class="page message-page">
+      <h1>担当メイドさんからのメッセージ</h1>
+      <div class="message-slot"><p>(担当メイドさんのお言葉画像)</p>
+</div><span class="page-number">10</span>
+    </section>
+
+    <section class="page back-cover">
+      <img class="frame" src="assets/hyoushi_waku.svg" alt="">
+      <img class="side-star star-l1" src="assets/hoshi_kazari.svg" alt=""><img class="side-star star-l2"
+        src="assets/hoshi_kazari.svg" alt="">
+      <img class="side-star star-r1" src="assets/hoshi_kazari.svg" alt=""><img class="side-star star-r2"
+        src="assets/hoshi_kazari.svg" alt="">
+      <img class="back-silhouette maid" src="assets/天秤座_透過.png" alt="">
+      <div class="presented">Presented by Hatoi Botan</div>
+      <div class="years">2026-2027</div>
+    </section>
+  </main>
+  <script>// The original workbook uses a two-column, three-row monthly record grid per page.
+for (const [id, start] of [['months-a', 1], ['months-b', 7]]) {
+  const grid = document.getElementById(id);
+  for (let month = start; month < start + 6; month++) {
+    const card = document.createElement('div');
+    card.className = 'month';
+    card.innerHTML = `<img src="assets/monthly_waku.svg" alt=""><span>${month}</span>`;
+    grid.appendChild(card);
+  }
+}
+</script>
+</body>
+
+</html>
