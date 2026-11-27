@@ -430,7 +430,35 @@ h1 {
 }
 
 .tarot-page .reading-slot {
-  top: 31mm;
+  top: 29mm;
+  left: 9mm;
+  right: 9mm;
+  bottom: 8mm;
+  overflow: hidden;
+}
+
+.tarot-spread {
+  height: 48mm;
+  margin-bottom: 3mm;
+  text-align: center;
+}
+
+.tarot-spread img {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 48mm;
+  object-fit: contain;
+}
+
+.tarot-forecasts {
+  font: inherit;
+}
+
+.tarot-forecasts p {
+  margin: 0;
+  white-space: pre-line;
 }
 
 /* 12 monthly record panels */
@@ -495,6 +523,14 @@ h1 {
   margin: 0 0 4mm;
 }
 
+.maid-message-image {
+  display: block;
+  max-width: 100%;
+  max-height: 132mm;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
 @media screen {
   .page {
     margin: 12mm auto;
@@ -531,7 +567,7 @@ h1 {
       <div class="cover-title">2027年の星占い</div>
       <img class="cover-flourish flourish-top" src="assets/maid_kazari.svg" alt="">
       <div class="cameo">
-        <div class="portrait-mask"><img class="maid portrait" src="assets/天秤座_透過.png" alt=""></div>
+        <div class="portrait-mask"><img class="maid portrait" src="assets/牡羊座_透過.png" alt=""></div>
         <img class="cameo-inner" src="assets/maru_nakami.svg" alt=""><img class="cameo-frill"
           src="assets/maru_frill.svg" alt="">
       </div>
@@ -569,24 +605,24 @@ h1 {
     </section>
 
     <section class="page reading-page">
-      <h1>持って生まれた傾向について</h1>
-      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります)</p>
+      <h1>2027年の誕生日から1年間のテーマ</h1>
+      <div class="reading-slot"><p>（個別鑑定の本文）</p>
 </div><span class="page-number">4</span>
     </section>
     <section class="page reading-page">
       <h1>2027年の概観</h1>
-      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります)</p>
+      <div class="reading-slot"><p>（個別鑑定の本文）</p>
 </div><span class="page-number">5</span>
     </section>
     <section class="page reading-page">
-      <h1>特に気をつけるべき時期</h1>
-      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります)</p>
+      <h1>大きな決断や行動に向かない時期</h1>
+      <div class="reading-slot"><p>（個別鑑定の本文）</p>
 </div><span class="page-number">6</span>
     </section>
     <section class="page reading-page tarot-page">
       <h1>12ヶ月のタロット予報</h1>
-      <div class="reading-slot"><p>(ここに個人別の鑑定内容が入ります（画像あり）)</p>
-</div><span class="page-number">7</span>
+      <div class="reading-slot"><div class="tarot-spread"><img src="assets/tarot/IMG_9727.JPEG" alt="12ヶ月のタロット"></div><div class="tarot-forecasts"><p>1月：占い本文<br>2月：占い本文<br>3月：占い本文<br>4月：占い本文<br>5月：占い本文<br>6月：占い本文<br>7月：占い本文<br>8月：占い本文<br>9月：占い本文<br>10月：占い本文<br>11月：占い本文<br>12月：占い本文</p>
+</div></div><span class="page-number">7</span>
     </section>
 
     <section class="page monthly-page">
@@ -599,8 +635,7 @@ h1 {
 
     <section class="page message-page">
       <h1>担当メイドさんからのメッセージ</h1>
-      <div class="message-slot"><p>(担当メイドさんのお言葉画像)</p>
-</div><span class="page-number">10</span>
+      <div class="message-slot"><img class="maid-message-image" src="assets/2027お言葉_牡羊座.png" alt="牡羊座座メイドさんのお言葉"></div><span class="page-number">10</span>
     </section>
 
     <section class="page back-cover">
@@ -609,7 +644,7 @@ h1 {
         src="assets/hoshi_kazari.svg" alt="">
       <img class="side-star star-r1" src="assets/hoshi_kazari.svg" alt=""><img class="side-star star-r2"
         src="assets/hoshi_kazari.svg" alt="">
-      <img class="back-silhouette maid" src="assets/天秤座_透過.png" alt="">
+      <img class="back-silhouette maid" src="assets/牡羊座_透過.png" alt="">
       <div class="presented">Presented by Hatoi Botan</div>
       <div class="years">2026-2027</div>
     </section>

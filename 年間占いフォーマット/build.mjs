@@ -39,22 +39,53 @@ for(const page of ['p05','p06','p07']) {
   html=html.replace(`<h1 data-page-title="${page}"></h1>`,`<h1>${title}</h1>`);
   html=html.replace(`<div class="reading-slot" data-page="${page}"></div>`,`<div class="reading-slot">${body}</div>`);
 }
-const tarotHeading=/^###\s+(1[0-2]|[1-9])月\s*$/gm;
-const tarotMatches=[...sourceSections.p08.matchAll(tarotHeading)];
-if(tarotMatches.length!==12) throw new Error('p08 must contain exactly twelve ### N月 sections (1月 through 12月).');
-const tarotEntries=tarotMatches.map((match,index)=>{
-  const month=Number(match[1]);
-  if(month!==index+1) throw new Error('Tarot months must be listed once each in order from 1月 to 12月.');
-  const start=match.index+match[0].length;
-  const end=index+1<tarotMatches.length?tarotMatches[index+1].index:sourceSections.p08.length;
-  const entry=sourceSections.p08.slice(start,end).trim();
-  const image=entry.match(/^(!\[[^\]]*\]\([^\r\n]+\))\s*(?:\r?\n|$)/);
-  if(!image) throw new Error(`${month}月 must start with a Tarot image Markdown line, such as ![カード](assets/tarot/01.png).`);
-  const fortune=entry.slice(image[0].length).trim();
-  if(!fortune) throw new Error(`${month}月 needs forecast text after its Tarot image.`);
-  return `<article class="tarot-month"><h2>${month}月</h2><div class="tarot-month-content">${marked.parseInline(image[1])}<div class="tarot-copy">${marked.parse(fortune)}</div></div></article>`;
-}).join('');
-html=html.replace('<div class="reading-slot" data-page="p08"></div>',`<div class="reading-slot">${tarotEntries}</div>`);
+const tarotLines=sourceSections.p08.split(/\r?\n/);
+const firstContentLine=tarotLines.findIndex(line=>line.trim());
+const imageLine=firstContentLine<0?'':tarotLines[firstContentLine].trim();
+const markdownImage=imageLine.match(/^!\[([^\]]*)\]\(([^\r\n]+)\)$/);
+const wikiImage=imageLine.match(/^!\[\[([^\]|]+)(?:\|([^\]]*))?\]\]$/);
+if(!markdownImage&&!wikiImage) {
+  throw new Error('p08 must start with one combined Tarot image, using either ![12ヶ月のタロット](assets/tarot/spread.png) or ![[assets/tarot/spread.png]].');
+}
+const rawImagePath=(markdownImage?markdownImage[2]:wikiImage[1]).replaceAll('\\','/');
+const assetsIndex=rawImagePath.lastIndexOf('assets/');
+if(assetsIndex<0) throw new Error(`Tarot image link must point into assets/: ${rawImagePath}`);
+let imagePath;
+try {
+  imagePath=decodeURIComponent(rawImagePath.slice(assetsIndex));
+} catch {
+  throw new Error(`Invalid URL encoding in Tarot image link: ${rawImagePath}`);
+}
+const resolvedImagePath=path.resolve(here,imagePath);
+const resolvedAssetsPath=path.resolve(here,'assets')+path.sep;
+if(!resolvedImagePath.toLowerCase().startsWith(resolvedAssetsPath.toLowerCase())) {
+  throw new Error(`Tarot image link must point into assets/: ${rawImagePath}`);
+}
+try {
+  await fs.access(resolvedImagePath);
+} catch {
+  throw new Error(`Missing combined Tarot image: ${imagePath}`);
+}
+const tarotAlt=markdownImage?markdownImage[1]:(wikiImage[2]||path.basename(imagePath,path.extname(imagePath)));
+const escapeHtml=value=>value.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+const tarotImageHtml=`<img src="${escapeHtml(imagePath)}" alt="${escapeHtml(tarotAlt)}">`;
+const forecastLines=tarotLines.slice(firstContentLine+1);
+const monthPattern=/^(1[0-2]|[1-9])月[：:]\s*(.*)$/;
+const monthStarts=[];
+for(let index=0;index<forecastLines.length;index++) {
+  const match=forecastLines[index].trim().match(monthPattern);
+  if(match) monthStarts.push({index,month:Number(match[1]),initialText:match[2]});
+}
+if(monthStarts.length!==12) throw new Error('After the combined image, p08 must contain twelve lines from 1月： through 12月：.');
+monthStarts.forEach((entry,index)=>{
+  if(entry.month!==index+1) throw new Error('Tarot forecasts must be listed once each in order from 1月 to 12月.');
+  const end=index+1<monthStarts.length?monthStarts[index+1].index:forecastLines.length;
+  const continued=forecastLines.slice(entry.index+1,end).map(line=>line.trim()).filter(Boolean);
+  const fortune=[entry.initialText,...continued].filter(Boolean).join(' ');
+  if(!fortune) throw new Error(`${entry.month}月 needs forecast text after its label.`);
+});
+const tarotMarkup=`<div class="tarot-spread">${tarotImageHtml}</div><div class="tarot-forecasts">${marked.parse(forecastLines.join(String.fromCharCode(10)),{breaks:true})}</div>`;
+html=html.replace('<div class="reading-slot" data-page="p08"></div>',`<div class="reading-slot">${tarotMarkup}</div>`);
 const maidMessageImage=`assets/2027お言葉_${signs[sign][0]}.png`;
 try {
   await fs.access(path.join(here,maidMessageImage));

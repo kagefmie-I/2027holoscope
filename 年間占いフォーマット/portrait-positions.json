@@ -1,14 +1,62 @@
 {
-  "aries": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "taurus": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "gemini": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "cancer": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "leo": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "virgo": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "libra": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "scorpio": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "sagittarius": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "capricorn": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "aquarius": { "scale": 3.2, "x": "50%", "y": "20%" },
-  "pisces": { "scale": 3.2, "x": "50%", "y": "20%" }
+  "aries": {
+    "scale": 3.2,
+    "x": "50%",
+    "y": "20%"
+  },
+  "taurus": {
+    "scale": 3.2,
+    "x": "50%",
+    "y": "20%"
+  },
+  "gemini": {
+    "scale": 3.2,
+    "x": "50%",
+    "y": "20%"
+  },
+  "cancer": {
+    "scale": 3.2,
+    "x": "50%",
+    "y": "1mm"
+  },
+  "leo": {
+    "scale": 3.2,
+    "x": "3mm",
+    "y": "-2mm"
+  },
+  "virgo": {
+    "scale": 3.2,
+    "x": "2mm",
+    "y": "0mm"
+  },
+  "libra": {
+    "scale": 3.2,
+    "x": "3mm",
+    "y": "1mm"
+  },
+  "scorpio": {
+    "scale": 3.2,
+    "x": "5mm",
+    "y": "0mm"
+  },
+  "sagittarius": {
+    "scale": 3.2,
+    "x": "50%",
+    "y": "20%"
+  },
+  "capricorn": {
+    "scale": 3.2,
+    "x": "5mm",
+    "y": "0mm"
+  },
+  "aquarius": {
+    "scale": 3.2,
+    "x": "1mm",
+    "y": "0mm"
+  },
+  "pisces": {
+    "scale": 3.2,
+    "x": "5mm",
+    "y": "-3mm"
+  }
 }
